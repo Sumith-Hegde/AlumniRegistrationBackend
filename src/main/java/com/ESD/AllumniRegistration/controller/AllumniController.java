@@ -34,12 +34,14 @@ public class AllumniController {
 
     @PostMapping("/studentDetails")
     public Student fetchStudentByYearName(@RequestBody RequestStudent student) {
-        return allumniService.fetchStudentByYearName(student.getGradYear(), student.getName());
+        Student stu = allumniService.fetchStudentByYearName(student.getGradYear(), student.getName());
+        return stu;
     }
 
     @PostMapping("/addDetails")
     public String addAllumniAndOrganisationDetails(@RequestBody AllumniOrganisationDetails details) {
-        return allumniService.insertAllumniAndOrganisation(details);
+        String s = allumniService.insertAllumniAndOrganisation(details);
+        return s;
     }
 
     @PostMapping("/loginCredentials")
@@ -63,28 +65,19 @@ public class AllumniController {
 
     @PostMapping("/registerAllumni")
     public Allumni registerAllumni(@RequestBody RegisterAllumni allumniReg) {
-        System.out.println(allumniReg);
         Allumni allumni = allumniService.registerAllumni(allumniReg);
         return allumni;
     }
 
     @PostMapping("/addOrganisation")
     public Organisation addOrganisation(@RequestBody OrgDetails org) {
-        try {
-            Organisation organisation = allumniService.addOrganisation(org);
-            return organisation;
-        } catch (Exception e) {
-            return null;
-        }
+        Organisation organisation = allumniService.addOrganisation(org);
+        return organisation;
     }
 
     @PostMapping("/addEducation")
     public AllumniEducation addEducation(@RequestBody EducationDetails eduDetails) {
-        try {
-            AllumniEducation edu = allumniService.addEducation(eduDetails);
-            return edu;
-        } catch (Exception e) {
-            return null;
-        }
+        AllumniEducation edu = allumniService.addEducation(eduDetails);
+        return edu;
     }
 }
