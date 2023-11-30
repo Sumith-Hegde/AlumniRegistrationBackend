@@ -8,6 +8,7 @@ import com.ESD.AllumniRegistration.data.dao.AllummniDao;
 import com.ESD.AllumniRegistration.data.dao.AllumniEducationDao;
 import com.ESD.AllumniRegistration.data.dao.AllumniOrganisationDao;
 import com.ESD.AllumniRegistration.data.dao.CredentialsDao;
+import com.ESD.AllumniRegistration.data.dao.HRDao;
 import com.ESD.AllumniRegistration.data.dao.OrganisationDao;
 import com.ESD.AllumniRegistration.data.dao.StudentDao;
 import com.ESD.AllumniRegistration.data.entities.AllumniEducationEntity;
@@ -41,6 +42,7 @@ public class AllumniRepositoryImplementation implements AllumniRepository {
     private final CredentialsDao credentialsDao;
     private final AllumniEducationDao eduDao;
     private final AllumniOrganisationDao allumniOrgDao;
+    private final HRDao hrDao;
 
     @Override
     public Student fetchStudentByYearName(int gradYear, String name) {
@@ -62,9 +64,52 @@ public class AllumniRepositoryImplementation implements AllumniRepository {
     }
 
     @Override
-    public boolean checkLoginCredentials(String userName, String password) {
+    public HR addHR(HR hr) {
+        try {
+            HREntity entity = hrDao.save(mapToEntityHREntity(hr));
+            return mapToDomainHR(entity);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public Organisation addOrganisation(Organisation org) {
+        try {
+            OrganisationEntity o = orgDao.save(mapToEntityOrganisationEntity(org));
+            return mapToDomainOrganisation(o);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public AllumniEducation addEducation(AllumniEducation edu) {
+        try {
+            AllumniEducationEntity edu1 = eduDao.save(mapToEntityEducationEntity(edu));
+            return mapToDomainEducation(edu1);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    @Override
+    public AllumniEntity checkLoginCredentials(String userName, String password) {
         CredentialsEntity entity = credentialsDao.findByUserName(userName);
-        return password.equals(entity.getPassword());
+        if (password.equals(entity.getPassword())) {
+            return entity.getAllumniId();
+        }
+        return null;
+    }
+
+    @Override
+    public Student fetchStudentById(int id) {
+        try {
+            Student stu = mapToDomainStudent(studentDao.findById(id).get());
+            return stu;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     @Override
@@ -215,6 +260,8 @@ public class AllumniRepositoryImplementation implements AllumniRepository {
         eduEntity.setInstitution(allumniEdu.getInstitution());
         eduEntity.setAllumniId(allumniDao.findById(allumniEdu.getAllumniId()).get());
         eduEntity.setAddress(allumniEdu.getAddress());
+        eduEntity.setJoiningYear(allumniEdu.getJoiningYear());
+        eduEntity.setPassingYear(allumniEdu.getPassingYear());
         return eduEntity;
     }
 
@@ -255,6 +302,7 @@ public class AllumniRepositoryImplementation implements AllumniRepository {
         CredentialsEntity credsEntity = new CredentialsEntity();
         credsEntity.setUserName(credentials.getUserName());
         credsEntity.setPassword(credentials.getPassword());
+        credsEntity.setAllumniId(allumniDao.findById(credentials.getAllumniId()).get());
         return credsEntity;
     }
 }

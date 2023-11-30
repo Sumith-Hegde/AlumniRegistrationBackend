@@ -10,4 +10,8 @@ public class AllumniDetails {
     private String contactNumber;
     private List<Education> education;
     private List<AllumniOrganisationDetails> orgs;
+    private String firstName;
+    private String lastName;
+    private int rollNumber;
+    private int graduationYear;
 }
